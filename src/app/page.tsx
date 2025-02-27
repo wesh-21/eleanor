@@ -37,6 +37,28 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen">
+      {/* Header with Logo */}
+      <header className="fixed top-0 left-0 w-full bg-gradient-to-r from-[#ECACA1] via-[#F3CEC6] to-[#ECACA1] bg-opacity-70 shadow-md h-16 z-10">
+        <div className="container mx-auto px-4 h-full relative flex items-center">
+          
+          {/* Logo (Centered and Fixed) */}
+          <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center h-full">
+            <img
+              src="/logo.png"
+              alt="Company Logo"
+              className="h-16 object-contain"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = "/api/placeholder/120/60";
+                target.onerror = null;
+              }}
+            />
+          </div>
+
+        </div>
+      </header>
+
+
       {/* Hero Section with Video Background */}
       <div className="relative w-full h-screen flex items-center justify-center">
         <video
@@ -48,18 +70,9 @@ export default function Home() {
           <source src="/saloon.mp4" type="video/mp4" />
         </video>
         
+      
+        
         <div className="absolute bg-black bg-opacity-50 w-full h-full flex flex-col items-center justify-center text-white text-center px-4">
-          {/* Logo */}
-          <div className="mt-[-30rem] mb-6">
-            <Image 
-              src="/logo.png" 
-              alt="Salon Logo" 
-              width={180} 
-              height={100} 
-              className="rounded-lg"
-            />
-          </div>
-          
           <h1 className="text-4xl md:text-6xl font-serif mb-4">Welcome to Our Salon</h1>
           <p className="text-lg md:text-xl mb-8">Luxury & Style in One Place</p>
           
