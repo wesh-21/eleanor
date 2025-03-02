@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import Header from "@/components/Header"
 import { useState, useEffect } from "react";
 
 export default function Home() {
@@ -38,25 +39,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header with Logo */}
-      <header className="fixed top-0 left-0 w-full bg-gradient-to-r from-[#ECACA1] via-[#F3CEC6] to-[#ECACA1] bg-opacity-70 shadow-md h-16 z-10">
-        <div className="container mx-auto px-4 h-full relative flex items-center">
-          
-          {/* Logo (Centered and Fixed) */}
-          <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center h-full">
-            <img
-              src="/logo.png"
-              alt="Company Logo"
-              className="h-16 object-contain"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.src = "/api/placeholder/120/60";
-                target.onerror = null;
-              }}
-            />
-          </div>
-
-        </div>
-      </header>
+      <Header />
 
 
       {/* Hero Section with Video Background */}
@@ -155,73 +138,72 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Contact & Location Section */}
-      <div className="py-16 px-4" style={{ backgroundColor: "#ECACA1" }}>
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8">
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl md:text-3xl font-serif mb-6">Contact Us</h2>
-            <div className="space-y-4">
-              <div className="flex items-center space-x-3">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
-                <p>(+351) 123-456-789</p>
-              </div>
-              <div className="flex items-center space-x-3">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-                <p>info@eleanor.com</p>
-              </div>
-              <div className="flex items-center space-x-3">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <div>
-                  <p>Terça - Sexta: 9h - 19h</p>
-                  <p>Sábado: 10h - 18h</p>
-                  <p>Domingo: Fechado</p>
-                </div>
-              </div>
+    {/* Contact & Location Section */}
+    <div className="py-16 px-4 sm:px-6 md:px-8" style={{ backgroundColor: "#ECACA1" }}>
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full">
+          <h2 className="text-2xl md:text-3xl font-serif mb-6">Contact Us</h2>
+          <div className="space-y-4">
+            <div className="flex items-center space-x-3">
+              <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+              <p className="text-sm sm:text-base">(+351) 123-456-789</p>
             </div>
-            
-          </div>
-          
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl md:text-3xl font-serif mb-6">Find Us</h2>
-            
-            {/* Map placeholder - in a real app, you would integrate Google Maps API */}
-            <div className="bg-gray-200 w-full h-64 rounded-lg flex items-center justify-center mb-4">
-              <Image 
-                src="/api/placeholder/600/400" 
-                alt="Map location" 
-                width={600} 
-                height={400}
-                className="w-full h-full object-cover rounded-lg"
-              />
+            <div className="flex items-center space-x-3">
+              <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <p className="text-sm sm:text-base break-words">info@eleanor.com</p>
             </div>
-            
-            <div className="mt-4">
-              <div className="flex items-start space-x-3">
-                <svg className="w-5 h-5 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                <p>123 Beauty Lane, Suite 100<br />Stylish City, SC 12345</p>
-              </div>
-              
-              <div className="mt-4">
-                <button 
-                  className="px-6 py-2 rounded-md text-white font-medium hover:opacity-90 transition"
-                  style={{ backgroundColor: "#F3CEC6", color: "#333" }}
-                >
-                  Get Directions
-                </button>
+            <div className="flex items-start space-x-3">
+              <svg className="w-5 h-5 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div>
+                <p className="text-sm sm:text-base">Terça - Sexta: 9h - 19h</p>
+                <p className="text-sm sm:text-base">Sábado: 10h - 18h</p>
+                <p className="text-sm sm:text-base">Domingo: Fechado</p>
               </div>
             </div>
           </div>
         </div>
+        
+        <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full">
+          <h2 className="text-2xl md:text-3xl font-serif mb-6">Find Us</h2>
+          
+          {/* Map placeholder - in a real app, you would integrate Google Maps API */}
+          <div className="bg-gray-200 w-full h-48 sm:h-64 rounded-lg flex items-center justify-center mb-4 overflow-hidden">
+            <Image 
+              src="/api/placeholder/600/400" 
+              alt="Map location" 
+              width={600} 
+              height={400}
+              className="w-full h-full object-cover rounded-lg"
+            />
+          </div>
+          
+          <div className="mt-4">
+            <div className="flex items-start space-x-3">
+              <svg className="w-5 h-5 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <p className="text-sm sm:text-base">123 Beauty Lane, Suite 100<br />Stylish City, SC 12345</p>
+            </div>
+            
+            <div className="mt-4">
+              <button 
+                className="px-4 sm:px-6 py-2 rounded-md text-white font-medium hover:opacity-90 transition"
+                style={{ backgroundColor: "#F3CEC6", color: "#333" }}
+              >
+                Get Directions
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
+    </div>
       
       {/* Footer */}
       <footer className="py-6 bg-gray-800 text-white text-center">
