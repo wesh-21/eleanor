@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { useRouter } from "next/navigation";
 
 interface ShippingInfo {
   name: string;
@@ -24,6 +25,7 @@ const CheckoutForm = ({
   clearCart, 
   setIsCartOpen 
 }: CheckoutFormProps) => {
+  const router = useRouter();
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -137,7 +139,7 @@ const CheckoutForm = ({
         throw new Error('Network response was not ok');
       }
 
-      const { clientSecret } = await response.json();
+      const { clientSecret, paymentIntentId, orderId } = await response.json();
 
       // Confirm the payment with Stripe.js
       const result = await stripe.confirmCardPayment(clientSecret, {
@@ -167,13 +169,17 @@ const CheckoutForm = ({
           // Payment successful
           setPaymentStatus({
             success: true,
-            message: 'Pagamento realizado com sucesso!',
+            message: 'Pagamento realizado com sucesso! Redirecionando...',
           });
-          // Clear cart and close it after successful payment
+          
+          // Limpar carrinho
+          clearCart();
+          setIsCartOpen(false);
+          
+          // Redirecionar para a página de confirmação
           setTimeout(() => {
-            clearCart();
-            setIsCartOpen(false);
-          }, 2000);
+            router.push(`/confirmacao?payment_intent_id=${paymentIntentId}&order_id=${orderId}`);
+          }, 1500);
         }
       }
     } catch (error) {

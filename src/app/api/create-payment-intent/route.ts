@@ -1,77 +1,64 @@
-// Arquivo: app/api/create-payment-intent/route.ts
-// (Se estiver usando Next.js 13+ com App Router)
-
-import { NextResponse } from 'next/server';
+// app/api/create-payment-intent/route.ts
+import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-// Inicializar o Stripe com a chave secreta
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2025-02-24.acacia',
-});
-
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { items, amount, shippingInfo } = body;
 
-    // Validar a solicitação
-    if (!items || !Array.isArray(items) || items.length === 0) {
-      return NextResponse.json(
-        { error: 'Carrinho inválido' },
-        { status: 400 }
-      );
-    }
-    
-    // Validar informações de entrega
-    if (!shippingInfo || !shippingInfo.name || !shippingInfo.address || !shippingInfo.postalCode) {
-      return NextResponse.json(
-        { error: 'Informações de entrega inválidas' },
-        { status: 400 }
-      );
-    }
+    // Inicializar Stripe com sua chave secreta
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+      apiVersion: '2025-02-24.acacia', // Use a versão mais recente disponível
+    });
 
-    // Certifique-se de que o valor seja um número válido
-    const amountInCents = Math.round(amount * 100);
-
-    // Criar um Payment Intent
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: amountInCents,
-      currency: 'eur', // Euro para pagamentos em Portugal
-      automatic_payment_methods: {
-        enabled: true,
-      },
-      metadata: {
-        order_details: JSON.stringify(
-          items.map(item => ({
-            id: item.id,
-            name: item.name,
-            quantity: item.quantity,
-          }))
-        ),
-        customer_name: shippingInfo.name,
-        customer_email: shippingInfo.email,
-        shipping_address: shippingInfo.address,
+    // Criar um Customer para associar com este pagamento
+    const customer = await stripe.customers.create({
+      email: shippingInfo.email,
+      name: shippingInfo.name,
+      phone: shippingInfo.phone,
+      address: {
+        line1: shippingInfo.address,
         postal_code: shippingInfo.postalCode,
-        phone: shippingInfo.phone
+        country: 'PT',
       },
-      shipping: {
-        name: shippingInfo.name,
-        phone: shippingInfo.phone,
-        address: {
-          line1: shippingInfo.address,
-          postal_code: shippingInfo.postalCode,
-          country: 'PT'
-        }
-      },
+    });
+
+    // Criar uma lista de descrições de produtos para metadados
+    const itemsDescription = items.map((item: any) => 
+      `${item.name} (${item.quantity}x €${item.price.toFixed(2)})`
+    ).join(', ');
+
+    // Criar um ID de pedido único
+    const orderId = `ORD-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 1000)}`;
+
+    // Criar um payment intent
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(amount * 100), // Converter para centavos
+      currency: 'eur',
+      customer: customer.id,
+      description: `Pedido: ${orderId}`,
+      metadata: {
+        orderId: orderId,
+        customerEmail: shippingInfo.email,
+        customerName: shippingInfo.name,
+        customerPhone: shippingInfo.phone,
+        shippingAddress: shippingInfo.address,
+        postalCode: shippingInfo.postalCode,
+        items: itemsDescription.substring(0, 500) // Limite de caracteres para metadados
+      }
     });
 
     return NextResponse.json({
       clientSecret: paymentIntent.client_secret,
+      paymentIntentId: paymentIntent.id,
+      orderId: orderId
     });
-  } catch (error) {
+
+  } catch (error: any) {
     console.error('Erro ao criar payment intent:', error);
     return NextResponse.json(
-      { error: 'Erro ao processar o pagamento' },
+      { error: error.message || 'Erro ao processar a solicitação' },
       { status: 500 }
     );
   }
