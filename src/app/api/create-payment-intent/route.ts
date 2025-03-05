@@ -1,46 +1,77 @@
-// app/api/create-payment-intent/route.ts
-import { NextRequest, NextResponse } from "next/server";
-import Stripe from "stripe";
+// Arquivo: app/api/create-payment-intent/route.ts
+// (Se estiver usando Next.js 13+ com App Router)
 
-// Initialize Stripe with your secret key
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  apiVersion: "2023-10-16", // Use the latest API version
+import { NextResponse } from 'next/server';
+import Stripe from 'stripe';
+
+// Inicializar o Stripe com a chave secreta
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
+  apiVersion: '2025-02-24.acacia',
 });
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { items, amount } = body;
+    const { items, amount, shippingInfo } = body;
 
-    // Ensure amount is valid
-    if (!amount || amount <= 0) {
+    // Validar a solicitação
+    if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json(
-        { error: "Invalid amount" },
+        { error: 'Carrinho inválido' },
+        { status: 400 }
+      );
+    }
+    
+    // Validar informações de entrega
+    if (!shippingInfo || !shippingInfo.name || !shippingInfo.address || !shippingInfo.postalCode) {
+      return NextResponse.json(
+        { error: 'Informações de entrega inválidas' },
         { status: 400 }
       );
     }
 
-    // Create a payment intent
+    // Certifique-se de que o valor seja um número válido
+    const amountInCents = Math.round(amount * 100);
+
+    // Criar um Payment Intent
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(amount * 100), // Convert to cents
-      currency: "usd",
-      // Add any additional data you want to associate with the payment
+      amount: amountInCents,
+      currency: 'eur', // Euro para pagamentos em Portugal
+      automatic_payment_methods: {
+        enabled: true,
+      },
       metadata: {
-        itemCount: items.length,
-        items: JSON.stringify(items.map((item: any) => ({
-          id: item.id,
-          name: item.name,
-          quantity: item.quantity
-        })))
-      }
+        order_details: JSON.stringify(
+          items.map(item => ({
+            id: item.id,
+            name: item.name,
+            quantity: item.quantity,
+          }))
+        ),
+        customer_name: shippingInfo.name,
+        customer_email: shippingInfo.email,
+        shipping_address: shippingInfo.address,
+        postal_code: shippingInfo.postalCode,
+        phone: shippingInfo.phone
+      },
+      shipping: {
+        name: shippingInfo.name,
+        phone: shippingInfo.phone,
+        address: {
+          line1: shippingInfo.address,
+          postal_code: shippingInfo.postalCode,
+          country: 'PT'
+        }
+      },
     });
 
-    // Return the client secret to the client
-    return NextResponse.json({ clientSecret: paymentIntent.client_secret });
+    return NextResponse.json({
+      clientSecret: paymentIntent.client_secret,
+    });
   } catch (error) {
-    console.error('Error creating payment intent:', error);
+    console.error('Erro ao criar payment intent:', error);
     return NextResponse.json(
-      { error: "Error creating payment intent" },
+      { error: 'Erro ao processar o pagamento' },
       { status: 500 }
     );
   }

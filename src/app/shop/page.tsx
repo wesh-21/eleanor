@@ -11,18 +11,19 @@ interface Product {
   price: number;
   image: string;
   description: string;
+  currency: string;
 }
 
 interface CartItem extends Product {
   quantity: number;
 }
 
-// Sample product data with correct image paths
+// Sample product data with correct image paths and currency
 const products: Product[] = [
-  { id: 1, name: "Shampoo", price: 15, image: "/shampoo.png", description: "Nourishing shampoo for all hair types" },
-  { id: 2, name: "Conditioner", price: 18, image: "/conditioner.png", description: "Hydrating conditioner for smooth, silky hair" },
-  { id: 3, name: "Hair Mask", price: 22, image: "/mask.jpg", description: "Deep conditioning treatment for damaged hair" },
-  { id: 4, name: "Hair Oil", price: 25, image: "/oil.jpg", description: "Lightweight oil for shine and frizz control" },
+  { id: 1, name: "Shampoo", price: 15, image: "/shampoo.png", description: "Nourishing shampoo for all hair types", currency: "EUR" },
+  { id: 2, name: "Conditioner", price: 18, image: "/conditioner.png", description: "Hydrating conditioner for smooth, silky hair", currency: "EUR" },
+  { id: 3, name: "Hair Mask", price: 22, image: "/mask.jpg", description: "Deep conditioning treatment for damaged hair", currency: "EUR" },
+  { id: 4, name: "Hair Oil", price: 25, image: "/oil.jpg", description: "Lightweight oil for shine and frizz control", currency: "EUR" },
 ];
 
 export default function Shop() {
@@ -99,7 +100,7 @@ export default function Shop() {
                 <h3 className="text-sm sm:text-lg font-medium text-gray-800">{product.name}</h3>
                 <p className="text-xs sm:text-sm text-gray-600 mt-1 line-clamp-2 sm:line-clamp-none">{product.description}</p>
                 <div className="flex justify-between items-center mt-2 sm:mt-4">
-                  <p className="text-sm sm:text-lg font-semibold">${product.price.toFixed(2)}</p>
+                  <p className="text-sm sm:text-lg font-semibold">{product.currency === "EUR" ? "€" : product.currency}{product.price.toFixed(2)}</p>
                   <button
                     onClick={() => addToCart(product)}
                     className="px-2 sm:px-4 py-1 sm:py-2 rounded-lg text-white font-medium text-xs sm:text-sm transition-colors duration-200"

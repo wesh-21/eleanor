@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import CheckoutForm from "./CheckoutForm";
 
 // Replace with your Stripe publishable key
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "");
@@ -14,6 +15,7 @@ interface Product {
   price: number;
   image: string;
   description: string;
+  currency: string;
 }
 
 interface CartItem extends Product {
@@ -29,148 +31,18 @@ interface CartProps {
   clearCart: () => void;
 }
 
-// CheckoutForm component to handle Stripe payment
-const CheckoutForm = ({ 
-  cartItems, 
-  totalPrice, 
-  clearCart, 
-  setIsCartOpen 
-}: { 
-  cartItems: CartItem[]; 
-  totalPrice: number; 
-  clearCart: () => void; 
-  setIsCartOpen: (isOpen: boolean) => void; 
-}) => {
-  const stripe = useStripe();
-  const elements = useElements();
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [paymentStatus, setPaymentStatus] = useState<{
-    success?: boolean;
-    message?: string;
-  }>({});
-
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-
-    if (!stripe || !elements) {
-      // Stripe.js hasn't loaded yet
-      return;
-    }
-
-    const cardElement = elements.getElement(CardElement);
-    if (!cardElement) return;
-
-    setIsProcessing(true);
-
-    try {
-      // Create a payment intent on your server
-      const response = await fetch('/api/create-payment-intent', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          items: cartItems,
-          amount: totalPrice,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      const { clientSecret } = await response.json();
-
-      // Confirm the payment with Stripe.js
-      const result = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: cardElement,
-          billing_details: {
-            // You can collect this information from the user if needed
-            name: 'Customer',
-          },
-        }
-      });
-
-      if (result.error) {
-        // Show error to your customer
-        setPaymentStatus({
-          success: false,
-          message: result.error.message,
-        });
-      } else {
-        if (result.paymentIntent.status === 'succeeded') {
-          // Payment successful
-          setPaymentStatus({
-            success: true,
-            message: 'Payment successful!',
-          });
-          // Clear cart and close it after successful payment
-          setTimeout(() => {
-            clearCart();
-            setIsCartOpen(false);
-          }, 2000);
-        }
-      }
-    } catch (error) {
-      setPaymentStatus({
-        success: false,
-        message: 'An error occurred while processing your payment.',
-      });
-      console.error('Error:', error);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="mt-4">
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Card details
-        </label>
-        <div className="p-3 border border-gray-300 rounded-md">
-          <CardElement 
-            options={{
-              style: {
-                base: {
-                  fontSize: '16px',
-                  color: '#424770',
-                  '::placeholder': {
-                    color: '#aab7c4',
-                  },
-                },
-                invalid: {
-                  color: '#9e2146',
-                },
-              },
-            }}
-          />
-        </div>
-      </div>
-
-      {paymentStatus.message && (
-        <div 
-          className={`p-3 rounded-md mb-4 ${
-            paymentStatus.success 
-              ? 'bg-green-100 text-green-700' 
-              : 'bg-red-100 text-red-700'
-          }`}
-        >
-          {paymentStatus.message}
-        </div>
-      )}
-
-      <button
-        type="submit"
-        disabled={!stripe || isProcessing || cartItems.length === 0}
-        className="w-full py-3 rounded-lg text-white font-medium transition-colors duration-200 disabled:opacity-50"
-        style={{ backgroundColor: cartItems.length === 0 ? '#cccccc' : '#ECACA1' }}
-      >
-        {isProcessing ? 'Processing...' : `Pay $${totalPrice.toFixed(2)}`}
-      </button>
-    </form>
-  );
+// Function to get currency symbol
+const getCurrencySymbol = (currency: string): string => {
+  switch (currency) {
+    case "EUR":
+      return "€";
+    case "USD":
+      return "$";
+    case "GBP":
+      return "£";
+    default:
+      return currency;
+  }
 };
 
 // Main Cart component
@@ -195,6 +67,10 @@ const Cart: React.FC<CartProps> = ({
     (count, item) => count + item.quantity, 
     0
   );
+
+  // Get currency from first item (assuming all items have same currency)
+  const currency = cartItems.length > 0 ? cartItems[0].currency : "EUR";
+  const currencySymbol = getCurrencySymbol(currency);
 
   const handleBackToCart = () => {
     setCheckoutMode(false);
@@ -248,12 +124,12 @@ const Cart: React.FC<CartProps> = ({
                       {cartItems.map(item => (
                         <div key={item.id} className="flex justify-between text-sm mb-1">
                           <span>{item.name} (x{item.quantity})</span>
-                          <span>${(item.price * item.quantity).toFixed(2)}</span>
+                          <span>{getCurrencySymbol(item.currency)}{(item.price * item.quantity).toFixed(2)}</span>
                         </div>
                       ))}
                       <div className="flex justify-between font-medium mt-2 pt-2 border-t">
                         <span>Total:</span>
-                        <span>${totalPrice.toFixed(2)}</span>
+                        <span>{currencySymbol}{totalPrice.toFixed(2)}</span>
                       </div>
                     </div>
                     
@@ -263,6 +139,7 @@ const Cart: React.FC<CartProps> = ({
                         totalPrice={totalPrice} 
                         clearCart={clearCart}
                         setIsCartOpen={setIsCartOpen}
+                        currency={currency}
                       />
                     </Elements>
                   </div>
@@ -292,7 +169,7 @@ const Cart: React.FC<CartProps> = ({
                               </svg>
                             </button>
                           </div>
-                          <p className="mt-1 text-sm text-gray-500">${item.price.toFixed(2)}</p>
+                          <p className="mt-1 text-sm text-gray-500">{getCurrencySymbol(item.currency)}{item.price.toFixed(2)}</p>
                           <div className="mt-2 flex items-center">
                             <button 
                               onClick={() => updateQuantity(item.id, item.quantity - 1)}
@@ -320,7 +197,7 @@ const Cart: React.FC<CartProps> = ({
                 <div className="border-t p-4">
                   <div className="flex justify-between mb-4">
                     <span className="font-medium text-gray-800">Total:</span>
-                    <span className="font-semibold">${totalPrice.toFixed(2)}</span>
+                    <span className="font-semibold">{currencySymbol}{totalPrice.toFixed(2)}</span>
                   </div>
                   <button 
                     onClick={handleProceedToCheckout}

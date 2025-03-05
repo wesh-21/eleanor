@@ -24,7 +24,7 @@ export default function Home() {
   }, [images.length]);
 
   // Manual carousel navigation
-  const goToSlide = (index) => {
+  const goToSlide = (index: number) => {
     setCurrentSlide(index);
   };
 
