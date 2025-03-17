@@ -1,4 +1,27 @@
 "use client"
+
+import { Suspense } from 'react';
+
+// Create a wrapper component that uses suspense
+const ConfirmationPageWrapper = () => {
+  return (
+    <Suspense fallback={<LoadingState />}>
+      <ConfirmationContent />
+    </Suspense>
+  );
+};
+
+// Loading state component
+const LoadingState = () => (
+  <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+    <div className="text-center py-8">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-300 mx-auto"></div>
+      <p className="mt-4 text-gray-600">A verificar o estado do seu pagamento...</p>
+    </div>
+  </div>
+);
+
+// Actual content component
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -13,9 +36,10 @@ interface OrderDetails {
   currency?: string;
   customer_email?: string;
   created?: number;
-  payment_method?: string;}
+  payment_method?: string;
+}
 
-const ConfirmationPage = () => {
+const ConfirmationContent = () => {
   const searchParams = useSearchParams();
   const paymentIntentId = searchParams.get('payment_intent_id');
   const orderId = searchParams.get('order_id');
@@ -119,4 +143,4 @@ const ConfirmationPage = () => {
   );
 };
 
-export default ConfirmationPage;
+export default ConfirmationPageWrapper;
