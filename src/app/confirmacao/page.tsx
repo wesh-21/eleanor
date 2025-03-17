@@ -3,12 +3,22 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
+// Define interface for order details
+interface OrderDetails {
+  id: string;
+  payment_id: string;
+  amount: number;
+  amount_total?: number;
+  status: string;
+  [key: string]: any; // For any additional properties that might come from the API
+}
+
 const ConfirmationPage = () => {
   const searchParams = useSearchParams();
   const paymentIntentId = searchParams.get('payment_intent_id');
   const orderId = searchParams.get('order_id');
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
-  const [orderDetails, setOrderDetails] = useState<any>(null);
+  const [orderDetails, setOrderDetails] = useState<OrderDetails | null>(null);
 
   useEffect(() => {
     const fetchPaymentStatus = async () => {

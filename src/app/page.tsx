@@ -5,7 +5,6 @@ import Image from "next/image";
 import Header from "@/app/components/Header"
 import { useState, useEffect } from "react";
 import FindUsSection from "@/app/components/FindUsSection";
-import GoogleMapsEmbed from "@/app/components/GoogleMapsEmbed";
 
 export default function Home() {
   // State for carousel

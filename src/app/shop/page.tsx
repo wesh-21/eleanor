@@ -49,8 +49,9 @@ export default function Shop() {
         } else {
           throw new Error(data.message || 'Error fetching products');
         }
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
+        setError(errorMessage);
         console.error('Error fetching products:', err);
       } finally {
         setLoading(false);

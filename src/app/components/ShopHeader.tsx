@@ -44,7 +44,6 @@ export default function ShopHeader({ itemCount, toggleCart }: ShopHeaderProps) {
             </div>
           </Link>
         </div>
-
       {/* Logo (Centered) - With smaller clickable area */}
       <Link href="/">
         <div className="inline-block">
@@ -55,17 +54,17 @@ export default function ShopHeader({ itemCount, toggleCart }: ShopHeaderProps) {
             height={16}
             className="object-contain"
             priority
-            onError={(e: any) => {
-              e.target.src = "/api/placeholder/120/60";
-              e.target.onerror = null;
+            onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
+              const target = e.currentTarget;
+              target.src = "/api/placeholder/120/60";
+              target.onerror = null;
             }}
           />
         </div>
       </Link>
-
         {/* Cart Button (Right-Aligned) */}
         <div className="absolute right-4 flex items-center h-full">
-          <button 
+          <button
             onClick={toggleCart}
             className="relative p-2 rounded-full transition-all duration-200"
             style={{ backgroundColor: '#F3CEC6' }}
