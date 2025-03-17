@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 
@@ -41,7 +41,7 @@ export default function EditProduct() {
           });
         }
       } catch (err) {
-        console.error('Error fetching product:', err);
+        console.error('Error fetching product:', err instanceof Error ? err.message : 'Unknown error');
         alert('Failed to load product');
       } finally {
         setLoading(false);
@@ -51,7 +51,7 @@ export default function EditProduct() {
     fetchProduct();
   }, [productId, router]);
   
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -59,7 +59,7 @@ export default function EditProduct() {
     });
   };
   
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     try {
@@ -77,7 +77,7 @@ export default function EditProduct() {
         throw new Error(data.message || 'Failed to update product');
       }
     } catch (err) {
-      console.error('Error updating product:', err);
+      console.error('Error updating product:', err instanceof Error ? err.message : 'Unknown error');
       alert('Failed to update product');
     }
   };
@@ -168,9 +168,10 @@ export default function EditProduct() {
               src={formData.image} 
               alt="Product preview" 
               className="h-32 object-contain"
-              onError={(e) => {
-                e.target.src = "/api/placeholder/100/100";
-                e.target.onerror = null;
+              onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+                const target = e.currentTarget;
+                target.src = "/api/placeholder/100/100";
+                target.onerror = null;
               }}
             />
           </div>
