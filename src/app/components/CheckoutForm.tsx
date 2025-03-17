@@ -12,18 +12,31 @@ interface ShippingInfo {
   email: string;
 }
 
+// Updated CartItem interface to use MongoDB _id
+interface CartItem {
+  _id: string; // Changed from id: number to _id: string
+  name: string;
+  price: number;
+  quantity: number;
+  currency: string;
+  image?: string;
+  description?: string;
+}
+
 interface CheckoutFormProps {
-  cartItems: any[];
+  cartItems: CartItem[]; // Use the properly typed CartItem interface
   totalPrice: number;
   clearCart: () => void;
   setIsCartOpen: (isOpen: boolean) => void;
+  currency?: string; // Added optional currency prop
 }
 
 const CheckoutForm = ({ 
   cartItems, 
   totalPrice, 
   clearCart, 
-  setIsCartOpen 
+  setIsCartOpen,
+  currency = "EUR" // Default to EUR if not provided
 }: CheckoutFormProps) => {
   const router = useRouter();
   const stripe = useStripe();
@@ -122,6 +135,26 @@ const CheckoutForm = ({
     setIsProcessing(true);
 
     try {
+      // Before payment, we update inventory in MongoDB
+      const inventoryUpdateResponse = await fetch('/api/inventory/update', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          items: cartItems.map(item => ({
+            _id: item._id,
+            quantity: item.quantity
+          }))
+        }),
+      });
+      
+      const inventoryResult = await inventoryUpdateResponse.json();
+      
+      if (!inventoryResult.success) {
+        throw new Error(inventoryResult.message || 'Failed to update inventory');
+      }
+      
       // Enviar informações de entrega junto com o pagamento
       const response = await fetch('/api/create-payment-intent', {
         method: 'POST',
@@ -131,6 +164,7 @@ const CheckoutForm = ({
         body: JSON.stringify({
           items: cartItems,
           amount: totalPrice,
+          currency: currency.toLowerCase(),
           shippingInfo: shippingInfo
         }),
       });

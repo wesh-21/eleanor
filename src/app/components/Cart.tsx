@@ -10,12 +10,13 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY 
 
 // Define types
 interface Product {
-  id: number;
+  _id: string; // Changed from id: number to _id: string for MongoDB
   name: string;
   price: number;
   image: string;
   description: string;
   currency: string;
+  stock?: number; // Added stock property
 }
 
 interface CartItem extends Product {
@@ -26,8 +27,8 @@ interface CartProps {
   isCartOpen: boolean;
   setIsCartOpen: (isOpen: boolean) => void;
   cartItems: CartItem[];
-  removeFromCart: (productId: number) => void;
-  updateQuantity: (productId: number, newQuantity: number) => void;
+  removeFromCart: (productId: string) => void; // Changed from number to string
+  updateQuantity: (productId: string, newQuantity: number) => void; // Changed from number to string
   clearCart: () => void;
 }
 
@@ -122,7 +123,7 @@ const Cart: React.FC<CartProps> = ({
                     <div className="mb-4 border-b pb-4">
                       <h3 className="font-medium text-gray-800 mb-2">Order Summary</h3>
                       {cartItems.map(item => (
-                        <div key={item.id} className="flex justify-between text-sm mb-1">
+                        <div key={item._id} className="flex justify-between text-sm mb-1">
                           <span>{item.name} (x{item.quantity})</span>
                           <span>{getCurrencySymbol(item.currency)}{(item.price * item.quantity).toFixed(2)}</span>
                         </div>
@@ -146,7 +147,7 @@ const Cart: React.FC<CartProps> = ({
                 ) : (
                   <ul className="divide-y divide-gray-200">
                     {cartItems.map(item => (
-                      <li key={item.id} className="py-4 flex">
+                      <li key={item._id} className="py-4 flex">
                         <img 
                           src={item.image} 
                           alt={item.name} 
@@ -161,7 +162,7 @@ const Cart: React.FC<CartProps> = ({
                           <div className="flex justify-between">
                             <h3 className="text-sm font-medium text-gray-800">{item.name}</h3>
                             <button 
-                              onClick={() => removeFromCart(item.id)}
+                              onClick={() => removeFromCart(item._id)}
                               className="text-gray-400 hover:text-gray-600"
                             >
                               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -172,14 +173,14 @@ const Cart: React.FC<CartProps> = ({
                           <p className="mt-1 text-sm text-gray-500">{getCurrencySymbol(item.currency)}{item.price.toFixed(2)}</p>
                           <div className="mt-2 flex items-center">
                             <button 
-                              onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                              onClick={() => updateQuantity(item._id, item.quantity - 1)}
                               className="text-gray-500 hover:text-gray-700 h-6 w-6 flex items-center justify-center rounded-full border border-gray-300"
                             >
                               -
                             </button>
                             <span className="mx-2 text-gray-700">{item.quantity}</span>
                             <button 
-                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                              onClick={() => updateQuantity(item._id, item.quantity + 1)}
                               className="text-gray-500 hover:text-gray-700 h-6 w-6 flex items-center justify-center rounded-full border border-gray-300"
                             >
                               +

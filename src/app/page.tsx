@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import Header from "@/components/Header"
+import Header from "@/app/components/Header"
 import { useState, useEffect } from "react";
+import FindUsSection from "@/app/components/FindUsSection";
+import GoogleMapsEmbed from "@/app/components/GoogleMapsEmbed";
 
 export default function Home() {
   // State for carousel
@@ -56,8 +58,8 @@ export default function Home() {
       
         
         <div className="absolute bg-black bg-opacity-50 w-full h-full flex flex-col items-center justify-center text-white text-center px-4">
-          <h1 className="text-4xl md:text-6xl font-serif mb-4">Welcome to Our Salon</h1>
-          <p className="text-lg md:text-xl mb-8">Luxury & Style in One Place</p>
+          <h1 className="text-4xl md:text-6xl font-serif mb-4">Bem-vinda ao Nosso Salão</h1>
+          <p className="text-lg md:text-xl mb-8">Luxo e Estilo num Só Lugar</p>
           
           {/* Button with your color */}
           <Link
@@ -65,12 +67,12 @@ export default function Home() {
             className="px-6 py-3 rounded-lg text-lg font-semibold hover:opacity-90 transition shadow-md"
             style={{ backgroundColor: "#ECACA1", color: "#333" }}
           >
-            Shop Our Products
+            Os Nossos Produtos
           </Link>
           
           {/* Scroll indicator */}
           <div className="absolute bottom-8 animate-bounce">
-            <p className="text-sm mb-2">Scroll for more</p>
+            <p className="text-sm mb-2">Deslizar para mais</p>
             <svg className="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
             </svg>
@@ -81,7 +83,7 @@ export default function Home() {
       {/* Gallery Section with Carousel */}
       <div className="py-16 px-4" style={{ backgroundColor: "#F3CEC6" }}>
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-serif mb-10 text-center">Our Work</h2>
+          <h2 className="text-3xl md:text-4xl font-serif mb-10 text-center">O Nosso Trabalho</h2>
           
           {/* Carousel */}
           <div className="relative mx-auto max-w-4xl overflow-hidden rounded-lg shadow-xl">
@@ -96,7 +98,7 @@ export default function Home() {
                 >
                   <Image
                     src={img}
-                    alt={`Salon demonstration ${index + 1}`}
+                    alt={`Demonstração de salão ${index + 1}`}
                     fill
                     className="object-cover"
                   />
@@ -142,13 +144,13 @@ export default function Home() {
     <div className="py-16 px-4 sm:px-6 md:px-8" style={{ backgroundColor: "#ECACA1" }}>
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full">
-          <h2 className="text-2xl md:text-3xl font-serif mb-6">Contact Us</h2>
+          <h2 className="text-2xl md:text-3xl font-serif mb-6">Contacte-nos</h2>
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
               <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
               </svg>
-              <p className="text-sm sm:text-base">(+351) 123-456-789</p>
+              <p className="text-sm sm:text-base">(+351) 913-091-648</p>
             </div>
             <div className="flex items-center space-x-3">
               <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -169,39 +171,7 @@ export default function Home() {
           </div>
         </div>
         
-        <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full">
-          <h2 className="text-2xl md:text-3xl font-serif mb-6">Find Us</h2>
-          
-          {/* Map placeholder - in a real app, you would integrate Google Maps API */}
-          <div className="bg-gray-200 w-full h-48 sm:h-64 rounded-lg flex items-center justify-center mb-4 overflow-hidden">
-            <Image 
-              src="/api/placeholder/600/400" 
-              alt="Map location" 
-              width={600} 
-              height={400}
-              className="w-full h-full object-cover rounded-lg"
-            />
-          </div>
-          
-          <div className="mt-4">
-            <div className="flex items-start space-x-3">
-              <svg className="w-5 h-5 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-              <p className="text-sm sm:text-base">123 Beauty Lane, Suite 100<br />Stylish City, SC 12345</p>
-            </div>
-            
-            <div className="mt-4">
-              <button 
-                className="px-4 sm:px-6 py-2 rounded-md text-white font-medium hover:opacity-90 transition"
-                style={{ backgroundColor: "#F3CEC6", color: "#333" }}
-              >
-                Get Directions
-              </button>
-            </div>
-          </div>
-        </div>
+        <FindUsSection />
       </div>
     </div>
       
@@ -225,7 +195,7 @@ export default function Home() {
             </svg>
           </a>
         </div>
-        <p>© {new Date().getFullYear()} Our Salon. All rights reserved.</p>
+        <p>© Eleanor. Todos os direitos reservados.</p>
       </footer>
     </div>
   );
