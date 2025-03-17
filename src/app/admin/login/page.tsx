@@ -1,6 +1,5 @@
 "use client"
-
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function AdminLogin() {
@@ -10,11 +9,11 @@ export default function AdminLogin() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e) => {
+  const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setError('');
-    
+   
     try {
       // Call API endpoint to verify credentials
       const response = await fetch('/api/admin/login', {
@@ -24,9 +23,9 @@ export default function AdminLogin() {
         },
         body: JSON.stringify({ username, password }),
       });
-      
+     
       const data = await response.json();
-      
+     
       if (data.success) {
         // Store in session storage so it's lost when browser is closed
         sessionStorage.setItem('adminAuth', 'true');
@@ -35,7 +34,7 @@ export default function AdminLogin() {
         setError('Nome de utilizador ou palavra-passe incorretos');
       }
     } catch (err) {
-      console.error('Login error:', err);
+      console.error('Login error:', err instanceof Error ? err.message : 'Unknown error');
       setError('Erro ao iniciar sessão. Tente novamente.');
     } finally {
       setLoading(false);
@@ -46,13 +45,13 @@ export default function AdminLogin() {
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
         <h1 className="text-2xl font-bold text-center mb-6">Admin Login</h1>
-        
+       
         {error && (
           <div className="mb-4 p-3 bg-red-100 text-red-600 rounded-md">
             {error}
           </div>
         )}
-        
+       
         <form onSubmit={handleLogin}>
           <div className="mb-4">
             <label className="block text-sm font-medium mb-1">Username</label>
@@ -64,7 +63,7 @@ export default function AdminLogin() {
               required
             />
           </div>
-          
+         
           <div className="mb-6">
             <label className="block text-sm font-medium mb-1">Password</label>
             <input
@@ -75,7 +74,7 @@ export default function AdminLogin() {
               required
             />
           </div>
-          
+         
           <button
             type="submit"
             disabled={loading}
