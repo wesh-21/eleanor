@@ -1,13 +1,22 @@
 "use client"
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ChangeEvent, FormEvent, SyntheticEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+
+interface ProductFormData {
+  name: string;
+  price: string;
+  description: string;
+  stock: string;
+  image: string;
+  currency: string;
+}
 
 export default function NewProduct() {
   const router = useRouter();
   
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ProductFormData>({
     name: '',
     price: '',
     description: '',
@@ -24,7 +33,7 @@ export default function NewProduct() {
     }
   }, [router]);
   
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -32,7 +41,7 @@ export default function NewProduct() {
     });
   };
   
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     // Convert string values to numbers where needed
@@ -57,7 +66,7 @@ export default function NewProduct() {
         throw new Error(data.message || 'Failed to create product');
       }
     } catch (err) {
-      console.error('Error creating product:', err);
+      console.error('Error creating product:', err instanceof Error ? err.message : 'Unknown error');
       alert('Failed to create product');
     }
   };
@@ -144,9 +153,10 @@ export default function NewProduct() {
               src={formData.image} 
               alt="Product preview" 
               className="h-32 object-contain"
-              onError={(e) => {
-                e.target.src = "/api/placeholder/100/100";
-                e.target.onerror = null;
+              onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
+                const target = e.currentTarget;
+                target.src = "/api/placeholder/100/100";
+                target.onerror = null;
               }}
             />
           </div>
