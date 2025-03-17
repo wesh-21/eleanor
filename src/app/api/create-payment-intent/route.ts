@@ -2,6 +2,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
+interface CartItem {
+  name: string;
+  quantity: number;
+  price: number;
+  // Add other properties your item might have
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -24,10 +31,10 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Criar uma lista de descrições de produtos para metadados
-    const itemsDescription = items.map((item: any) => 
-      `${item.name} (${item.quantity}x €${item.price.toFixed(2)})`
-    ).join(', ');
+  // Criar uma lista de descrições de produtos para metadados
+  const itemsDescription = items.map((item: CartItem) =>
+  `${item.name} (${item.quantity}x €${item.price.toFixed(2)})`
+  ).join(', ');
 
     // Criar um ID de pedido único
     const orderId = `ORD-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 1000)}`;
@@ -55,10 +62,15 @@ export async function POST(request: NextRequest) {
       orderId: orderId
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Erro ao criar payment intent:', error);
+
+      // Type guard to safely access error properties
+      const errorMessage = error instanceof Error 
+      ? error.message 
+      : 'Erro ao processar a solicitação';
     return NextResponse.json(
-      { error: error.message || 'Erro ao processar a solicitação' },
+      { error: errorMessage || 'Erro ao processar a solicitação' },
       { status: 500 }
     );
   }

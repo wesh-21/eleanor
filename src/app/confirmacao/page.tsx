@@ -10,8 +10,10 @@ interface OrderDetails {
   amount: number;
   amount_total?: number;
   status: string;
-  [key: string]: any; // For any additional properties that might come from the API
-}
+  currency?: string;
+  customer_email?: string;
+  created?: number;
+  payment_method?: string;}
 
 const ConfirmationPage = () => {
   const searchParams = useSearchParams();
@@ -36,17 +38,22 @@ const ConfirmationPage = () => {
        
         if (data.status === 'succeeded') {
           setStatus('success');
+          // Use type assertion to safely merge the data
           setOrderDetails({
             id: orderId || 'N/A',
             payment_id: paymentIntentId,
-            amount_total: data.amount,
-            ...data
+            amount: data.amount,
+            status: data.status,
+            currency: data.currency,
+            customer_email: data.customer_email,
+            created: data.created,
+            payment_method: data.payment_method
           });
         } else {
           setStatus('error');
         }
       } catch (error) {
-        console.error('Erro:', error);
+        console.error('Erro:', error instanceof Error ? error.message : 'Erro desconhecido');
         setStatus('error');
       }
     };
@@ -77,6 +84,9 @@ const ConfirmationPage = () => {
               <h3 className="font-medium text-gray-700 mb-2">Detalhes do Pedido:</h3>
               <p className="text-sm text-gray-600">ID do Pedido: {orderDetails.id}</p>
               <p className="text-sm text-gray-600">Total: €{(orderDetails.amount / 100).toFixed(2)}</p>
+              {orderDetails.customer_email && (
+                <p className="text-sm text-gray-600">Email: {orderDetails.customer_email}</p>
+              )}
             </div>
           )}
          

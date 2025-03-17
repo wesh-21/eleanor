@@ -39,10 +39,16 @@ export async function GET(request: NextRequest) {
         message: 'O pagamento ainda não foi concluído'
       });
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Erro ao verificar o status do pagamento:', error);
+    
+    // Type guard to safely access error properties
+    const errorMessage = error instanceof Error 
+      ? error.message 
+      : 'Erro ao processar a solicitação';
+    
     return NextResponse.json(
-      { error: error.message || 'Erro ao processar a solicitação' },
+      { error: errorMessage },
       { status: 500 }
     );
   }
