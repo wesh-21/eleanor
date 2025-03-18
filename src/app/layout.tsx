@@ -6,7 +6,7 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'Eleanor',
   icons: {
-    icon: '/logo.png',
+    icon: '/logo.ico',
   },
 }
  
