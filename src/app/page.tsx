@@ -57,7 +57,7 @@ export default function Home() {
       
         
         <div className="absolute bg-black bg-opacity-50 w-full h-full flex flex-col items-center justify-center text-white text-center px-4">
-          <h1 className="text-4xl md:text-6xl font-serif mb-4">Bem-vinda ao Nosso Salão</h1>
+          <h1 className="text-4xl md:text-6xl font-serif mb-4">Bem-vinda ao Nosso Espaço</h1>
           <p className="text-lg md:text-xl mb-8">Luxo e Estilo num Só Lugar</p>
           
           {/* Button with your color */}
