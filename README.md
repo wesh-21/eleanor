@@ -1,42 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Eleanor Beauty Salon 💄✨
 
-## Getting Started
+![Eleanor Beauty Salon](https://raw.githubusercontent.com/wesh-21/eleanor/main/public/logo.png)
 
-First, run the development server:
+Eleanor is a professional beauty salon website with integrated e-commerce capabilities, allowing customers to purchase beauty products online.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+**Live Website**: [https://eleanor.pt](https://eleanor.pt)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **E-commerce Shop**: Browse and purchase beauty products with secure checkout using Stripe
+- **Admin Dashboard**: Complete salon management system
+- **Responsive Design**: Optimized for all devices from mobile to desktop
+- **Google Map**: Google Maps integration to obtain directions
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🛠️ Technologies
 
-## Learn More
+- **Frontend**: 
+  - [Next.js](https://nextjs.org/) - React framework for server-rendered applications
+  - [React](https://reactjs.org/) - UI library
+  - [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
+  - [SWR](https://swr.vercel.app/) - React Hooks for data fetching
 
-To learn more about Next.js, take a look at the following resources:
+- **Backend**:
+  - [Next.js API Routes](https://nextjs.org/docs/api-routes/introduction) - Serverless functions
+  - [MongoDB](https://www.mongodb.com/) - NoSQL database for flexible data storage
+  - [Mongoose](https://mongoosejs.com/) - MongoDB object modeling
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Authentication**:
+  - [NextAuth.js](https://next-auth.js.org/) - Authentication for Next.js
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Payment Processing**:
+  - [Stripe](https://stripe.com/) - Secure payment infrastructure
 
-## Deploy on Vercel
+## 🎨 Design & Branding
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The design follows a clean, elegant aesthetic using the following color scheme:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Primary: `#ECACA1` - Soft coral/peach
+- Secondary: `#F3CEC6` - Light blush pink
+- Accents: Shades of white and gray for a clean, professional look
 
+## 🚀 Getting Started
 
-# Color Scheme
+### Prerequisites
 
-#ECACA1
-#F3CEC6
+- Node.js 14.x or later
+- npm or yarn
+- MongoDB connection
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/eleanor.git
+   cd eleanor
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+3. Set up environment variables:
+   Create a `.env.local` file with the following variables:
+   ```
+   MONGODB_URI=your_mongodb_connection_string
+   NEXTAUTH_URL=http://localhost:3000
+   NEXTAUTH_SECRET=your_nextauth_secret
+   STRIPE_PUBLIC_KEY=your_stripe_public_key
+   STRIPE_SECRET_KEY=your_stripe_secret_key
+   ```
+
+4. Run the development server:
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   # or
+   pnpm dev
+   # or
+   bun dev
+   ```
+
+5. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
