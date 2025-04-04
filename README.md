@@ -1,7 +1,5 @@
 # Eleanor Beauty Salon 💄✨
 
-![Eleanor Beauty Salon](https://raw.githubusercontent.com/wesh-21/eleanor/main/public/logo.png)
-
 Eleanor is a professional beauty salon website with integrated e-commerce capabilities, allowing customers to purchase beauty products online.
 
 **Live Website**: [https://eleanor.pt](https://eleanor.pt)
@@ -16,21 +14,16 @@ Eleanor is a professional beauty salon website with integrated e-commerce capabi
 ## 🛠️ Technologies
 
 - **Frontend**: 
-  - [Next.js](https://nextjs.org/) - React framework for server-rendered applications
-  - [React](https://reactjs.org/) - UI library
-  - [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
-  - [SWR](https://swr.vercel.app/) - React Hooks for data fetching
+  - [Next.js]
+  - [TypeScript]
+  - [Tailwind CSS]
 
 - **Backend**:
-  - [Next.js API Routes](https://nextjs.org/docs/api-routes/introduction) - Serverless functions
-  - [MongoDB](https://www.mongodb.com/) - NoSQL database for flexible data storage
-  - [Mongoose](https://mongoosejs.com/) - MongoDB object modeling
-
-- **Authentication**:
-  - [NextAuth.js](https://next-auth.js.org/) - Authentication for Next.js
+  - [Next.js API Routes]
+  - [MongoDB]
 
 - **Payment Processing**:
-  - [Stripe](https://stripe.com/) - Secure payment infrastructure
+  - [Stripe] - Secure payment infrastructure
 
 ## 🎨 Design & Branding
 
